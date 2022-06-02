@@ -1,7 +1,7 @@
 
 #### ANSIBLE REFACTORING AND STATIC ASSIGNMENTS (IMPORTS AND ROLES)
 So far in Project 9 10
-now every new change in the codes creates a separate directory which is not very convenient when we want to run some commands from one place so we use plug in [Copy Artifact](https://plugins.jenkins.io/copyartifact/)  
+now every new change in the codes creates a separate directory which is not very convenient when we want to run some commands from one place so we use plug in [Copy Artifact](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copyArtifact.png)   
 
 
 
