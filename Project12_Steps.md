@@ -10,7 +10,7 @@ Installing **Copy Artifact**
 ![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copyArtifact.png)
 
 
-Creating directory in Jenkins instances to store all artifacts after each build
+Creating directory in Jenkins instance to store all artifacts after each build
 ``` bash
 sudo mkdir /home/ubuntu/ansible-config-artifact
 ```
@@ -96,38 +96,39 @@ Finished: SUCCESS
 ```
 
 Now the directory we created is populated 
+``` bash
 ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
 .
 ├── 2plays.yml
 ├── README.md
-├── inventory [error opening dir]
+├── inventory [error opening dir] #tree didnt work
 └── playbooks [error opening dir]
-
 2 directories, 2 files
+```
 
+Just to see my pipeline worked I created TestFile in the repo **ansible-config-mng** to trigger the ansible job automatically and I can see the file in the directory **ansible-config-artifact**
 
-Just to see my pipeline worked I created TestFile in the repo ansible-config-mng t to trigger the ansible job automatically and I can see the end results by seen the file in the directory ansible-config-artifact 
-
+``` bash
 ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
 .
 ├── 2plays.yml
 ├── README.md
-├── TestFile
+├── TestFile #<<<
 ├── inventory [error opening dir]
 └── playbooks [error opening dir]
 
 2 directories, 3 files
+```
+
+Now that I'm adding new stuff to the repo and changing the structure around I can see it copied to **ansible-config-artifact**
 
 
-Now that Im addint new stuff to the repo and changing the structure around. I can see the being copied to ansible-config-artifact (it doesn’t seem to delete old files, just keeps them)
+
+#### REFACTOR ANSIBLE CODE BY IMPORTING OTHER PLAYBOOKS INTO SITE.YML  
 
 
-
-#### REFACTOR ANSIBLE CODE BY IMPORTING OTHER PLAYBOOKS INTO SITE.YML
-
-
-#### CONFIGURE UAT WEBSERVERS WITH A ROLE ‘WEBSERVER’
+#### CONFIGURE UAT WEBSERVERS WITH A ROLE ‘WEBSERVER’  
 
 
-#### REFERENCE WEBSERVER ROLE
+#### REFERENCE WEBSERVER ROLE  
 
