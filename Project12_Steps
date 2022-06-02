@@ -1,23 +1,21 @@
 
 #### ANSIBLE REFACTORING AND STATIC ASSIGNMENTS (IMPORTS AND ROLES)
 So far in Project 9 10
-now every new change in the codes creates a separate directory which is not very convenient when we want to run some commands from one place so we use plug in [Copy Artifact](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copyArtifact.png)   
+now every new change in the codes creates a separate directory which is not very convenient when we want to run some commands from one place so we use plug in [Copy Artifact](https://plugins.jenkins.io/copyartifact/)   
 
 
+Installing **Copy Artifact**  
+**Manage Jenkins** >  **Manage Plugins**  
+
+![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copyArtifact.png)
 
 
+Creating directory in Jenkins instances to store all artifacts after each build
+``` bash
+sudo mkdir /home/ubuntu/ansible-config-artifact
+```
 
-
-Manage Jenkins >  Manage Plugins 
-Search bar and make sure you search on avaiable
-Now we isntall plugin without restarting jenkins even thought I already did both
-
-copyArtifact
-![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-AUTOMATE/main/images/consoleOutput.png)
-
-
-Creating directory in Jenkins instances to store all artifacts after each builds sudo mkdir /home/ubuntu/ansible-config-artifact
-
+``` bash
 ubuntu@ip-172-31-94-159:~$ sudo chmod -R 0777 /home/ubuntu/ansible-config-artifact	
 ubuntu@ip-172-31-94-159:~$ ls -l
 total 24
@@ -28,19 +26,18 @@ drwxrwxrwx 2 root   root   4096 Apr 17 15:53 ansible-config-artifact
 -rw-rw-r-- 1 ubuntu ubuntu    4 Apr  2 15:41 hello
 drwxrwxr-x 3 ubuntu ubuntu 4096 Apr  2 14:44 key
 ubuntu@ip-172-31-94-159:~$
+```
 
 
-New Job
+Creating Jenkins Job **save_artifacts**
+
+![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/itemName.png)
 
 
+This project/job will be triggered by completion of our existing **ansible** project. Configure it accordingly:
+![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copy_artifact_trigger.png)  
 
 
-Screen clipping taken: 4/17/2022 11:59 AM
-ItemName
-
-1. Create a new Freestyle project (you have done it in Project 9) and name it save_artifacts.
-2. This project will be triggered by completion of your existing ansible project. Configure it accordingly:
-We are using the same pic provided then we crop
 
 
 
