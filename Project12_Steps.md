@@ -122,13 +122,121 @@ ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
 
 Now that I'm adding new stuff to the repo and changing the structure around I can see it copied to **ansible-config-artifact**
 
-
-
 #### REFACTOR ANSIBLE CODE BY IMPORTING OTHER PLAYBOOKS INTO SITE.YML  
+
+I will now move away from having all my tasks in a single playbook like I did in Project 11 with common.yml. Breaking tasks up into different files is an excellent way to organize complex sets of tasks and reuse them.
+
+1. Within playbooks folder I will create site.yml – This file will now be considered as an entry point into the entire infrastructure configuration. By including other playbooks in it site.yml becomes the parent to all other playbooks that will be developed.
+
+2. At the root of the repository I create a folder static-assignments where I will store all other children playbooks
+   
+3. I'll move **common.yml** file into the newly created static-assignments folder.
+ 
+4. Inside **site.yml** file I'll import **common.yml** playbook.
+
+``` bash
+import_playbook: ../static-assignments/common.yml
+```
+In addition I created another playbook **common-del.yml** which essentially is just a clone of **common.yml** with **state** set to **absent** to undo changes (uninstall wireshark)  
+
+ So far my **ansible-config-artifact** directory structure looks like this  
+ 
+``` bash
+ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
+.
+├── 2plays.yml
+├── README.md
+├── inventory #Will start using static inventories
+│   ├── dev.yml
+│   ├── prod.yml
+│   ├── staging
+│   └── uat
+├── playbooks
+│   └── site.yml
+└── static-assignments
+    ├── common-del.yml
+    └── common.yml
+```
 
 
 #### CONFIGURE UAT WEBSERVERS WITH A ROLE ‘WEBSERVER’  
 
+Created 2 new instances with Red Hat  
+**Web1-UAT**  
+**Web2-UAT**  
+
+To create a role, I'll create a directory called **roles/**, relative to the playbook.
+
+Inside repo **ansible-config-mgt** I create a directory **roles**
+and used utility **ansible-galaxy** to create the a structure which I named **webservers**
+
+``` bash
+mkdir roles
+cd roles
+ansible-galaxy init webserver
+```
+``` bash
+hector@hector-Laptop:~/ansible-config-mgt/roles$ tree
+.
+└── webserver
+    ├── defaults
+    │   └── main.yml
+    ├── files
+    ├── handlers
+    │   └── main.yml
+    ├── meta
+    │   └── main.yml
+    ├── README.md
+    ├── tasks
+    │   └── main.yml
+    ├── templates
+    ├── tests
+    │   ├── inventory
+    │   └── test.yml
+    └── vars
+        └── main.yml
+```
+This default structure might have extra directories we won't use and can delete  
+
+Need to make an entry on ansible configuration file _/etc/ansible/**ansible.cfg**_ specifying the location of the roles _/home/ubuntu/ansible-config-mgt/roles_
+``` bash
+roles_path = /home/ubuntu/ansible-config-mgt/roles
+```
 
 #### REFERENCE WEBSERVER ROLE  
+
+Within the s**tatic-assignments** folderI create a new assignment/playbook for uat-webservers **uat-webservers.yml** which contains a reference to the role we just created **webservers**
+
+``` bash
+---
+- hosts: uat-webservers #From static inventory uat.ini
+  remote_user: ec2-user
+  roles:
+    - webservers
+```
+I will be using inventory file ``ansible-config-mgt/inventory/uat.ini``  
+``` bash
+[uat-webservers]
+172.31.81.182 ansible_ssh_user='ec2-user'
+172.31.89.227 ansible_ssh_user='ec2-user'
+```
+I test it  
+``ansible-inventory -i ansible-config-artifact/inventory/uat.ini --graph``  
+
+``` bash
+@all:
+  |--@uat-webservers:
+  |  |--172.31.81.182
+  |  |--172.31.89.227
+  |--@ungrouped:
+```
+
+Now I have to import this playbook in our parent playbook **site.yml**
+``` bash
+- import_playbook: ../static-assignments/uat-webservers.yml
+```
+
+Finally I can run the playbook against my uat inventory and see what happens:
+``sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml``
+	
 
