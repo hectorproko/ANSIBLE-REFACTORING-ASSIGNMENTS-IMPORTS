@@ -34,31 +34,26 @@ Creating Jenkins Job **save_artifacts**
 ![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/itemName.png)
 
 
-This project/job will be triggered by completion of our existing **ansible** project. Configure it accordingly:
-![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copy_artifact_trigger.png)  
+This project/job will be triggered by completion of our existing **ansible** project.   
+![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copy_artifact_trigger.png)
 
 
+Now we configure the job to actually save the artifact to the directory we just created we created  
+_/home/ubuntu/ansible-config-artifact_  
 
+![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/build1.png)
 
+![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/build2.png)
 
+I will test the job by making a change in repo **ansible-config-mgt** specifically the readme file to trigger the project through the webhook
 
-
-
-Step 6: make the job actually save the artifact to the directory we just created we create the step
-
-
-
-Build1
-
-
-
-Screen clipping taken: 4/17/2022 12:24 PM
-Build2
-
-Then to test we make a change in ansible-config-mgt in readme file to trigger the webhook, which previously did not worked but is working now.
-
+**Console Log** of **ansible** job.  
+Shows it was triggered by a **push** (a commit with message "Update README.md") and it triggered job **save_artifacts**
+``` bash
 Job name  ansible
-Started by GitHub push by hectorproko
+
+Started by GitHub push by hectorproko #<<<<
+
 Running as SYSTEM
 Building in workspace /var/lib/jenkins/workspace/ansible
 The recommended git tool is: NONE
@@ -75,19 +70,22 @@ using GIT_ASKPASS to set credentials
 Checking out Revision 5db5aa77bd6c8b9cb3563c81f359026ccee275ce (refs/remotes/origin/main)
  > git config core.sparsecheckout # timeout=10
  > git checkout -f 5db5aa77bd6c8b9cb3563c81f359026ccee275ce # timeout=10
-Commit message: "Update README.md"
+
+Commit message: "Update README.md" #<<<<
+ 
  > git rev-list --no-walk 4a520c83d57729a09264bec6bf5831d470a7e728 # timeout=10
 Archiving artifacts
-Triggering a new build of save_artifacts
+
+Triggering a new build of save_artifacts #<<<<
+
 Finished: SUCCESS
+```
 
-This job triggers are newly created job save_artifacts
+Looking at **save_artifacts**'s **Console Output** we see it was triggered by upstream project **ansible**
 
+![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/consoleOutput.png)
 
-
-Screen clipping taken: 4/17/2022 12:30 PM
-consoleOutput
-
+``` bash
 Started by upstream project "ansible" build number 10	
 originally caused by:
  Started by GitHub push by hectorproko
@@ -95,7 +93,7 @@ Running as SYSTEM
 Building in workspace /var/lib/jenkins/workspace/save_artifacts
 Copied 7 artifacts from "ansible" build number 10
 Finished: SUCCESS
-
+```
 
 Now the directory we created is populated 
 ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
