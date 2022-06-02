@@ -1,0 +1,138 @@
+
+#### ANSIBLE REFACTORING AND STATIC ASSIGNMENTS (IMPORTS AND ROLES)
+So far in Project 9 10
+now every new change in the codes creates a separate directory which is not very convenient when we want to run some commands from one place so we use plug in [Copy Artifact](https://plugins.jenkins.io/copyartifact/)  
+
+
+
+
+
+
+Manage Jenkins >  Manage Plugins 
+Search bar and make sure you search on avaiable
+Now we isntall plugin without restarting jenkins even thought I already did both
+
+copyArtifact
+![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-AUTOMATE/main/images/consoleOutput.png)
+
+
+Creating directory in Jenkins instances to store all artifacts after each builds sudo mkdir /home/ubuntu/ansible-config-artifact
+
+ubuntu@ip-172-31-94-159:~$ sudo chmod -R 0777 /home/ubuntu/ansible-config-artifact	
+ubuntu@ip-172-31-94-159:~$ ls -l
+total 24
+-rw-r--r-- 1 root   root    333 Apr 15 23:09 2plays.yml
+drwxrwxrwx 2 root   root   4096 Apr 17 15:53 ansible-config-artifact
+-rw-r--r-- 1 ubuntu ubuntu  572 Apr 17 15:16 common.yml
+-rw------- 1 ubuntu ubuntu 1799 Apr  2 14:45 daro.io.pem
+-rw-rw-r-- 1 ubuntu ubuntu    4 Apr  2 15:41 hello
+drwxrwxr-x 3 ubuntu ubuntu 4096 Apr  2 14:44 key
+ubuntu@ip-172-31-94-159:~$
+
+
+New Job
+
+
+
+
+Screen clipping taken: 4/17/2022 11:59 AM
+ItemName
+
+1. Create a new Freestyle project (you have done it in Project 9) and name it save_artifacts.
+2. This project will be triggered by completion of your existing ansible project. Configure it accordingly:
+We are using the same pic provided then we crop
+
+
+
+
+
+
+Step 6: make the job actually save the artifact to the directory we just created we create the step
+
+
+
+Build1
+
+
+
+Screen clipping taken: 4/17/2022 12:24 PM
+Build2
+
+Then to test we make a change in ansible-config-mgt in readme file to trigger the webhook, which previously did not worked but is working now.
+
+Job name  ansible
+Started by GitHub push by hectorproko
+Running as SYSTEM
+Building in workspace /var/lib/jenkins/workspace/ansible
+The recommended git tool is: NONE
+using credential 4339e2c2-cc4c-4596-b5a3-b06d893f6339
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/ansible/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/hectorproko/ansible-config-mgt.git # timeout=10
+Fetching upstream changes from https://github.com/hectorproko/ansible-config-mgt.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.25.1'
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --force --progress -- https://github.com/hectorproko/ansible-config-mgt.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 5db5aa77bd6c8b9cb3563c81f359026ccee275ce (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 5db5aa77bd6c8b9cb3563c81f359026ccee275ce # timeout=10
+Commit message: "Update README.md"
+ > git rev-list --no-walk 4a520c83d57729a09264bec6bf5831d470a7e728 # timeout=10
+Archiving artifacts
+Triggering a new build of save_artifacts
+Finished: SUCCESS
+
+This job triggers are newly created job save_artifacts
+
+
+
+Screen clipping taken: 4/17/2022 12:30 PM
+consoleOutput
+
+Started by upstream project "ansible" build number 10	
+originally caused by:
+ Started by GitHub push by hectorproko
+Running as SYSTEM
+Building in workspace /var/lib/jenkins/workspace/save_artifacts
+Copied 7 artifacts from "ansible" build number 10
+Finished: SUCCESS
+
+
+Now the directory we created is populated 
+ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
+.
+├── 2plays.yml
+├── README.md
+├── inventory [error opening dir]
+└── playbooks [error opening dir]
+
+2 directories, 2 files
+
+
+Just to see my pipeline worked I created TestFile in the repo ansible-config-mng t to trigger the ansible job automatically and I can see the end results by seen the file in the directory ansible-config-artifact 
+
+ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
+.
+├── 2plays.yml
+├── README.md
+├── TestFile
+├── inventory [error opening dir]
+└── playbooks [error opening dir]
+
+2 directories, 3 files
+
+
+Now that Im addint new stuff to the repo and changing the structure around. I can see the being copied to ansible-config-artifact (it doesn’t seem to delete old files, just keeps them)
+
+
+
+#### REFACTOR ANSIBLE CODE BY IMPORTING OTHER PLAYBOOKS INTO SITE.YML
+
+
+#### CONFIGURE UAT WEBSERVERS WITH A ROLE ‘WEBSERVER’
+
+
+#### REFERENCE WEBSERVER ROLE
+
