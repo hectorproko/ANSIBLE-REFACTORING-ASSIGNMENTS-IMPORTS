@@ -237,6 +237,7 @@ Now I have to import this playbook in our parent playbook **site.yml**
 ```
 
 Finally I can run the playbook against my uat inventory and see what happens:
-``sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml``
-	
+``` bash
+sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml
+```
 
