@@ -232,10 +232,12 @@ I test it
 ```
 
 Now I have to import this playbook in our parent playbook **site.yml**
-``- import_playbook: ../static-assignments/uat-webservers.yml``
-
+``` bash
+- import_playbook: ../static-assignments/uat-webservers.yml
+```
 
 Finally I can run the playbook against my uat inventory and see what happens:  
-``sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml``
-
+``` bash
+sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml
+```
 
