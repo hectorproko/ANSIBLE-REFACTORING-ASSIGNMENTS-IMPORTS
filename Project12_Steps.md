@@ -1,7 +1,9 @@
 
 #### ANSIBLE REFACTORING AND STATIC ASSIGNMENTS (IMPORTS AND ROLES)
-So far in Project 9 10
-now every new change in the codes creates a separate directory which is not very convenient when we want to run some commands from one place so we use plug in [Copy Artifact](https://plugins.jenkins.io/copyartifact/)   
+
+In this project I will continue working with [ansible-config-mgt](https://github.com/hectorproko/ansible-config-mgt.git) repository and make some improvements to the code. Now I need to refactor the **Ansible** code, create assignments, and learn how to use the **imports** functionality to effectively re-use previously created playbooks in a new playbook – it allows us to organize tasks and reuse them as needed.
+
+So far in Projects 9 & 11 every **new** change in the code creates a separate directory which is not very convenient when we want to run some commands from one place so we'll use plug in [Copy Artifact](https://plugins.jenkins.io/copyartifact/)   
 
 
 Installing **Copy Artifact**  
@@ -10,11 +12,12 @@ Installing **Copy Artifact**
 ![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copyArtifact.png)
 
 
-Creating directory in Jenkins instance to store all artifacts after each build
+Creating directory in **Jenkins** instance to store all artifacts after each build
 ``` bash
 sudo mkdir /home/ubuntu/ansible-config-artifact
 ```
 
+Changing permission of the directory `ansible-config-artifact`
 ``` bash
 ubuntu@ip-172-31-94-159:~$ sudo chmod -R 0777 /home/ubuntu/ansible-config-artifact	
 ubuntu@ip-172-31-94-159:~$ ls -l
@@ -29,7 +32,7 @@ ubuntu@ip-172-31-94-159:~$
 ```
 
 
-Creating Jenkins Job **save_artifacts**
+Creating **Jenkins** Job **save_artifacts**
 
 ![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/itemName.png)
 
@@ -38,17 +41,16 @@ This project/job will be triggered by completion of our existing **ansible** pro
 ![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/copy_artifact_trigger.png)
 
 
-Now we configure the job to actually save the artifact to the directory we just created we created  
-_/home/ubuntu/ansible-config-artifact_  
+Now we configure the job to actually save the artifact to the directory we just created  `/home/ubuntu/ansible-config-artifact`  
 
 ![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/build1.png)
 
 ![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/build2.png)
 
-I will test the job by making a change in repo **ansible-config-mgt** specifically the readme file to trigger the project through the webhook
+I will test the job by making a change in repo `ansible-config-mgt` specifically the readme file to trigger the project through the webhook
 
 **Console Log** of **ansible** job.  
-Shows it was triggered by a **push** (a commit with message "Update README.md") and it triggered job **save_artifacts**
+Shows it was triggered by a **push** *(a commit with message "Update README.md")* and it triggered job **save_artifacts**
 ``` bash
 Job name  ansible
 
@@ -81,7 +83,7 @@ Triggering a new build of save_artifacts #<<<<
 Finished: SUCCESS
 ```
 
-Looking at **save_artifacts**'s **Console Output** we see it was triggered by upstream project **ansible**
+Looking at `save_artifacts`'s **Console Output** we see it was triggered by upstream project `ansible`
 
 ![Markdown Logo](https://raw.githubusercontent.com/hectorproko/ANSIBLE-REFACTORING-ASSIGNMENTS-IMPORTS/main/images/consoleOutput.png)
 
@@ -106,7 +108,7 @@ ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
 2 directories, 2 files
 ```
 
-Just to see my pipeline worked I created TestFile in the repo **ansible-config-mng** to trigger the ansible job automatically and I can see the file in the directory **ansible-config-artifact**
+Just to see my pipeline worked I created **TestFile** in the repo `ansible-config-mng` to trigger the `ansible` job automatically and I can see the file in the directory `ansible-config-artifact`
 
 ``` bash
 ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
@@ -120,26 +122,26 @@ ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
 2 directories, 3 files
 ```
 
-Now that I'm adding new stuff to the repo and changing the structure around I can see it copied to **ansible-config-artifact**
+As I add/move/delete files in the repo and change the structure, I can see it copied to `ansible-config-artifact`
 
 #### REFACTOR ANSIBLE CODE BY IMPORTING OTHER PLAYBOOKS INTO SITE.YML  
 
-I will now move away from having all my tasks in a single playbook like I did in Project 11 with common.yml. Breaking tasks up into different files is an excellent way to organize complex sets of tasks and reuse them.
+I will now move away from having all my tasks in a single playbook like I did in [Project 11](https://github.com/hectorproko/ANSIBLE-AUTOMATE/blob/main/Steps_Project11.md) with `common.yml`. Breaking tasks up into different files is an excellent way to organize complex sets of tasks and reuse them.
 
-1. Within playbooks folder I will create site.yml – This file will now be considered as an entry point into the entire infrastructure configuration. By including other playbooks in it site.yml becomes the parent to all other playbooks that will be developed.
+1. Within playbooks folder I will create `site.yml` – This file will now be considered as an entry point into the entire infrastructure configuration. By including other playbooks in it, `site.yml` becomes the parent to all other playbooks that will be developed.
 
-2. At the root of the repository I create a folder static-assignments where I will store all other children playbooks
+2. At the root of the repository I create a folder `static-assignments` where I will store all other children playbooks
    
-3. I'll move **common.yml** file into the newly created static-assignments folder.
+3. I'll move `common.yml` file into the newly created `static-assignments` folder.
  
-4. Inside **site.yml** file I'll import **common.yml** playbook.
+4. Inside `site.yml` file I'll import `common.yml` playbook.
 
 ``` bash
 import_playbook: ../static-assignments/common.yml
 ```
-In addition I created another playbook **common-del.yml** which essentially is just a clone of **common.yml** with **state** set to **absent** to undo changes (uninstall wireshark)  
+In addition, I created another playbook `common-del.yml` which is just a copy of `common.yml` with **state** set to **absent** to undo changes *(uninstall wireshark)*  
 
- So far my **ansible-config-artifact** directory structure looks like this  
+ So far my `ansible-config-artifact` directory structure looks like this  
  
 ``` bash
 ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
@@ -161,14 +163,14 @@ ubuntu@ip-172-31-94-159:~/ansible-config-artifact$ sudo tree
 
 #### CONFIGURE UAT WEBSERVERS WITH A ROLE ‘WEBSERVER’  
 
-Created 2 new instances with Red Hat  
+Created 2 new instances with **RedHat**  
 **Web1-UAT**  
 **Web2-UAT**  
 
-To create a role, I'll create a directory called **roles/**, relative to the playbook.
+To create a role, I'll create a directory called `roles`, relative to the playbook.
 
-Inside repo **ansible-config-mgt** I create a directory **roles**
-and used utility **ansible-galaxy** to create the a structure which I named **webservers**
+Inside repo `ansible-config-mgt` I create a directory `roles`
+and used utility **ansible-galaxy** to create the a structure which I named **webservers** *(I commit and push to Hithub)*
 
 ``` bash
 mkdir roles
@@ -196,16 +198,17 @@ hector@hector-Laptop:~/ansible-config-mgt/roles$ tree
     └── vars
         └── main.yml
 ```
-This default structure might have extra directories we won't use and can delete  
+*This default structure might have extra directories we won't use and can delete*  
 
-Need to make an entry on ansible configuration file _/etc/ansible/**ansible.cfg**_ specifying the location of the roles _/home/ubuntu/ansible-config-mgt/roles_
+Need to make an entry on **ansible** configuration file `/etc/ansible/ansible.cfg` specifying the location of the roles `/home/ubuntu/ansible-config-mgt/roles`
+
 ``` bash
 roles_path = /home/ubuntu/ansible-config-mgt/roles
 ```
 
 #### REFERENCE WEBSERVER ROLE  
 
-Within the s**tatic-assignments** folderI create a new assignment/playbook for uat-webservers **uat-webservers.yml** which contains a reference to the role we just created **webservers**
+Within the `static-assignments` folder I create a new assignment/**playbook** for **uat-webservers** `uat-webservers.yml` which contains a reference to the role we just created **webservers**
 
 ``` bash
 ---
@@ -214,14 +217,14 @@ Within the s**tatic-assignments** folderI create a new assignment/playbook for u
   roles:
     - webservers
 ```
-I will be using inventory file ``ansible-config-mgt/inventory/uat.ini``  
+I will be using inventory file `ansible-config-mgt/inventory/uat.ini`  
 ``` bash
 [uat-webservers]
 172.31.81.182 ansible_ssh_user='ec2-user'
 172.31.89.227 ansible_ssh_user='ec2-user'
 ```
 I test it  
-``ansible-inventory -i ansible-config-artifact/inventory/uat.ini --graph``  
+`ansible-inventory -i ansible-config-artifact/inventory/uat.ini --graph`
 
 ``` bash
 @all:
@@ -231,12 +234,12 @@ I test it
   |--@ungrouped:
 ```
 
-Now I have to import this playbook in our parent playbook **site.yml**
+Now I have to import this **playbook** in our **parent playbook** `site.yml`
 ``` bash
 - import_playbook: ../static-assignments/uat-webservers.yml
 ```
 
-Finally I can run the playbook against my uat inventory and see what happens:  
+Finally I can run the **playbook** against my uat inventory and see what happens:  
 ``` bash
 sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml
 ```
